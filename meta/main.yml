@@ -1,0 +1,17 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: jedimt
+  role_name: linux_node_exporter
+  description: Install Prometheus node exporter
+  license: GPLv2
+  min_ansible_version: "5"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+        - bionic
+  galaxy_tags:
+    - prometheus

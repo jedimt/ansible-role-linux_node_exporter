@@ -1,0 +1,41 @@
+---
+# tasks file for jedimt.linux_node_exporter
+- name: Create directory for node_exporter
+  ansible.builtin.file:
+    path: /opt/node_exporter/
+    state: directory
+    mode: '0755'
+
+- name: Download and expand node_exporter archive file
+  ansible.builtin.unarchive:
+    src: "{{ linux_node_exporter_tarball }}"
+    dest: /opt/node_exporter
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+  tags:
+    - exporter
+
+- name: Create service for node_exporter
+  ansible.builtin.blockinfile:
+    path: /etc/systemd/system/node_exporter.service
+    block: |
+      [Unit]
+      Description=Node Exporter
+      User=root
+
+      [Service]
+      Type=simple
+      Restart=always
+      ExecStart=/opt/node_exporter/node_exporter --web.listen-address="0.0.0.0:9100"
+
+      [Install]
+      WantedBy=multi-user.target
+    mode: '0644'
+    create: true
+
+- name: Enable the node_exporter service
+  ansible.builtin.systemd:
+    name: node_exporter.service
+    state: started
+    enabled: true
